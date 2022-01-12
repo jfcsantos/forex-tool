@@ -1,38 +1,30 @@
-import * as React from "react"
-import {
-  ChakraProvider,
-  Box,
-  Text,
-  Link,
-  VStack,
-  Code,
-  Grid,
-  theme,
-} from "@chakra-ui/react"
-import { ColorModeSwitcher } from "./ColorModeSwitcher"
-import { Logo } from "./Logo"
+import { ChakraProvider, Text, Flex, Container } from "@chakra-ui/react";
+import ForexTool from "./secfi/ForexTool";
 
 export const App = () => (
-  <ChakraProvider theme={theme}>
-    <Box textAlign="center" fontSize="xl">
-      <Grid minH="100vh" p={3}>
-        <ColorModeSwitcher justifySelf="flex-end" />
-        <VStack spacing={8}>
-          <Logo h="40vmin" pointerEvents="none" />
-          <Text>
-            Edit <Code fontSize="xl">src/App.tsx</Code> and save to reload.
+  <ChakraProvider resetCSS>
+    <Container maxW="container.xl" p={0}>
+      <Flex
+        direction="column"
+        align="center"
+        maxW={{ xl: "1200px" }}
+        m="0 auto"
+      >
+        <Flex
+          display="flex"
+          flexDirection="row"
+          alignItems="flex-start"
+          justifyContent="flex-start"
+        >
+          <Text fontSize="3xl" fontWeight="bold">
+            ⚡️Welcome to OpenChakra
           </Text>
-          <Link
-            color="teal.500"
-            href="https://chakra-ui.com"
-            fontSize="2xl"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn Chakra
-          </Link>
-        </VStack>
-      </Grid>
-    </Box>
+        </Flex>
+        <Text color="gray.500">The Visual Editor for Chakra UI</Text>
+      </Flex>
+      <Container maxW="container.xl" p={10}>
+        <ForexTool />
+      </Container>
+    </Container>
   </ChakraProvider>
-)
+);
