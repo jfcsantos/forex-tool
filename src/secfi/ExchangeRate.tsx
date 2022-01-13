@@ -1,29 +1,25 @@
-import { Container, Text } from "@chakra-ui/react";
+import { Container, Flex, Text } from "@chakra-ui/react";
 import { CurrencyExchangeData } from "./model/types";
 
 type Props = {
-  values: {
-    amount: number;
-    convertedAmount: number;
-    rateData: CurrencyExchangeData;
-  };
+  convertedAmount: number;
+  rateData: CurrencyExchangeData;
+  amount?: number;
 };
 
-export const ExchangeRate = ({
-  values: { amount, rateData, convertedAmount },
-}: Props) => {
+export const ExchangeRate = ({ amount = 1, rateData, convertedAmount }: Props) => {
   return (
-    <Container>
-      <Text fontWeight="bold" color="facebook.500">
+    <Flex direction="column" width="fit-content" marginTop={{ md: "-2em" }}>
+      <Text fontWeight="bold" fontSize="sm" color="facebook.500">
         {amount} {rateData.fromCurrencyName} ={" "}
       </Text>
-      <Text fontWeight="bold" fontSize="xl">
+      <Text fontWeight="bold" fontSize="4xl" marginBottom="0.5em">
         {convertedAmount} {rateData.toCurrencyName}
       </Text>
-      <Text>
+      <Text fontSize="sm">
         1 {rateData.fromCurrencyCode} = {rateData.exchangeRate}{" "}
         {rateData.toCurrencyCode}{" "}
       </Text>
-    </Container>
+    </Flex>
   );
 };

@@ -30,7 +30,12 @@ const ExchangeRates = ({ data, convertCurrency }: Props) => {
   return (
     <Flex direction="column">
       <RatesForm onSubmit={convertCurrency} initialValues={initialValues} />
-      {data && <ExchangeRate values={data} />}
+      {data && (
+        <ExchangeRate
+          rateData={data.rateData}
+          convertedAmount={data.convertedAmount}
+        />
+      )}
     </Flex>
   );
 };

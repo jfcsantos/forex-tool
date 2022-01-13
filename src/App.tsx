@@ -1,30 +1,32 @@
 import { ChakraProvider, Text, Flex, Container } from "@chakra-ui/react";
 import ForexTool from "./secfi/ForexTool";
+import theme from "./theme";
 
 export const App = () => (
-  <ChakraProvider resetCSS>
-    <Container maxW="container.xl" p={0}>
-      <Flex
-        direction="column"
-        align="center"
-        maxW={{ xl: "1200px" }}
-        m="0 auto"
-      >
-        <Flex
-          display="flex"
-          flexDirection="row"
-          alignItems="flex-start"
-          justifyContent="flex-start"
-        >
-          <Text fontSize="3xl" fontWeight="bold">
-            ⚡️Welcome to OpenChakra
-          </Text>
-        </Flex>
-        <Text color="gray.500">The Visual Editor for Chakra UI</Text>
+  <ChakraProvider resetCSS theme={theme}>
+    <Container
+      display="flex"
+      // justifyContent="space-between"
+      flexDirection="column"
+      maxW="full"
+      minH="100vh"
+      p={0}
+      bg="gray.50"
+    >
+      <Flex direction="column" align="flex-start" p="10" background="brand">
+        <Text fontSize="3xl" fontWeight="bold">
+          Secfi Forex
+        </Text>
+        <Text color="gray.500">A currency exchange tool.</Text>
       </Flex>
-      <Container maxW="container.xl" p={10}>
-        <ForexTool />
-      </Container>
+      <Text p="5">
+        Select the currency pair you wish to display the data for.
+      </Text>
+
+      <ForexTool />
+      <Flex direction="column" p="5" background="brand" marginTop="auto">
+        <Text color="gray.500">Copyright João Santos.</Text>
+      </Flex>
     </Container>
   </ChakraProvider>
 );
