@@ -19,14 +19,6 @@ const ExchangeRates = ({ data, convertCurrency }: Props) => {
     amount: 1,
   };
 
-  // useEffect(() => {
-  //   exchangeRateCallback(
-  //     initialValues.baseCurrency,
-  //     initialValues.targetCurrency,
-  //     initialValues.amount
-  //   );
-  // }, []);
-
   return (
     <Flex direction="column">
       <RatesForm onSubmit={convertCurrency} initialValues={initialValues} />

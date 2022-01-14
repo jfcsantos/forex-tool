@@ -10,7 +10,7 @@ type Props = {
 export const ExchangeRate = ({ amount = 1, rateData, convertedAmount }: Props) => {
   return (
     <Flex direction="column" width="fit-content" marginTop={{ md: "-2em" }}>
-      <Text fontWeight="bold" fontSize="sm" color="facebook.500">
+      <Text fontWeight="bold" fontSize="sm" color="brand.100">
         {amount} {rateData.fromCurrencyName} ={" "}
       </Text>
       <Text fontWeight="bold" fontSize="4xl" marginBottom="0.5em">

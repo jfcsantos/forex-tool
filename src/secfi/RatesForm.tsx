@@ -111,10 +111,9 @@ export const RatesForm = ({ initialValues, onSubmit }: Props) => {
           e.preventDefault();
           onSubmit(baseCurrency, targetCurrency, amount);
         }}
-        variant="solid"
+        variant="brand"
         alignSelf={{ base: "center", md: "flex-end" }}
         size="md"
-        colorScheme="messenger"
         type="submit"
         marginBottom={{ base: "2em", md: 0 }}
       >

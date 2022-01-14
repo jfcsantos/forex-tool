@@ -2,9 +2,18 @@ import { extendTheme } from "@chakra-ui/react";
 
 const theme = extendTheme({
   colors: {
-    brand: "#F9FAF5",
+    brand: { 100: "#46413c", 200: "#e9e8d9", 300: "#eaf1ec", 500: "#F9FAF5" },
   },
   components: {
+    Button: {
+      baseStyle: {
+        bgColor: "brand.100",
+        textColor: "brand.500",
+        _focus: {
+          boxShadow: "none",
+        },
+      },
+    },
     Tabs: {
       variants: {
         custom: {
@@ -13,9 +22,9 @@ const theme = extendTheme({
             overflow: "hidden",
           },
           tab: {
-            bg: "gray.200",
+            bg: "brand.300",
             _selected: {
-              bg: "white",
+              bg: "brand.500",
             },
             _focus: {
               boxShadow: "none",

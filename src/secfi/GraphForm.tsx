@@ -86,10 +86,9 @@ export const GraphForm = ({ initialValues, onSubmit }: Props) => {
           e.preventDefault();
           onSubmit(baseCurrency, targetCurrency);
         }}
-        variant="solid"
+        variant="brand"
         alignSelf={{ base: "center", md: "flex-end" }}
         size="md"
-        colorScheme="messenger"
         type="submit"
         marginBottom={{ base: "2em", md: 0 }}
       >

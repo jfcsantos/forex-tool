@@ -21,12 +21,12 @@ function ForexTool() {
     <Box
       display="flex"
       flexDirection="column"
-      m={{ base: "10", md: "2em auto 4em" }}
+      m={{ base: "-10em 2em 4em", md: "-10em auto 4em" }}
       maxWidth="2xl"
       alignSelf={{ base: "stretch" }}
-      boxShadow="2xl"
+      boxShadow="base"
       rounded="md"
-      bg="white"
+      bg="brand.500"
     >
       <Tabs isFitted variant="custom" width={{ base: "auto", md: "42em" }}>
         <TabList border="none">
