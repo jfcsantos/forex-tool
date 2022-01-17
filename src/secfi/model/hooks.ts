@@ -1,5 +1,4 @@
-import { timeStamp } from "console";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { getExchangeRates, getHistoricalData } from "./api";
 import { CurrencyExchangeData, DailyPrices, ExchangeResults } from "./types";
 
@@ -13,10 +12,6 @@ export const useExchangeData = () => {
   const [lastRequest, setLastRequest] = useState<Request>();
   const [loading, setLoading] = useState(false);
   const [exchangeData, setExchangeData] = useState<ExchangeResults>();
-
-  // useEffect(() => {
-  //   setLoading(false);
-  // }, [exchangeData]);
 
   const getResults = useCallback(
     async (from: string, to: string, amount: number = 1) => {
@@ -51,9 +46,6 @@ export const useExchangeData = () => {
       const requestDiff = lastRequest
         ? Math.floor((Date.now() - lastRequest?.timestamp) / 1000 / 60)
         : false;
-
-      console.log(requestDiff);
-
       if (
         !results ||
         (results &&
@@ -66,7 +58,6 @@ export const useExchangeData = () => {
       }
 
       setLastRequest({ from, to, timestamp: Date.now() });
-      // if not return old ones
       setExchangeData({
         ...results,
         convertedAmount: amount * parseFloat(results.rateData.exchangeRate),
