@@ -28,3 +28,10 @@ export type DailyPrices = {
     }
   ];
 };
+
+export type ExchangeResults = {
+  amount: number;
+  convertedAmount: number;
+  rateData: CurrencyExchangeData;
+  graphData: DailyPrices;
+};

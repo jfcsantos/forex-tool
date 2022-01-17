@@ -7,9 +7,9 @@ type Props = {
   amount?: number;
 };
 
-export const ExchangeRate = ({ amount = 1, rateData, convertedAmount }: Props) => {
+export const ExchangeRate = ({ amount, rateData, convertedAmount }: Props) => {
   return (
-    <Flex direction="column" width="fit-content" marginTop={{ md: "-2em" }}>
+    <Flex direction="column" width="fit-content" marginTop={{ md: "-2em" }} mb="4em">
       <Text fontWeight="bold" fontSize="sm" color="brand.100">
         {amount} {rateData.fromCurrencyName} ={" "}
       </Text>

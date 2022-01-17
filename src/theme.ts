@@ -14,25 +14,6 @@ const theme = extendTheme({
         },
       },
     },
-    Tabs: {
-      variants: {
-        custom: {
-          tablist: {
-            borderTopRadius: "base",
-            overflow: "hidden",
-          },
-          tab: {
-            bg: "brand.300",
-            _selected: {
-              bg: "brand.500",
-            },
-            _focus: {
-              boxShadow: "none",
-            },
-          },
-        },
-      },
-    },
   },
 });
 

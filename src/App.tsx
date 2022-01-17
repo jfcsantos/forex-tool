@@ -28,6 +28,7 @@ export const App = () => (
         background="brand.500"
         justifyContent="space-between"
         alignItems="center"
+        zIndex={100}
       >
         <Flex direction="column">
           <Logo />

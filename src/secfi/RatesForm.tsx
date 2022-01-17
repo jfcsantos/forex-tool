@@ -1,15 +1,11 @@
 import { useState } from "react";
-import { SpinnerIcon, UpDownIcon } from "@chakra-ui/icons";
+import { UpDownIcon } from "@chakra-ui/icons";
 import { Button, Flex, FormLabel, Input, InputGroup } from "@chakra-ui/react";
-import {
-  CurrencyType,
-  GroupedOption,
-  useCurrencyList,
-} from "./model/dataProvider/context";
+import { GroupedOption, useCurrencyList } from "./model/dataProvider/context";
 import { GroupBase, Select } from "chakra-react-select";
+import Loading from "./Loading";
 
 type Props = {
-  allowCryptoCurrencies?: boolean;
   initialValues: {
     baseCurrency: GroupedOption;
     targetCurrency: GroupedOption;
@@ -18,12 +14,8 @@ type Props = {
   onSubmit: (from: string, to: string, amount?: number) => void;
 };
 
-export const RatesForm = ({
-  allowCryptoCurrencies = true,
-  initialValues,
-  onSubmit,
-}: Props) => {
-  const { currencyTypes, isLoaded, getFilteredCurrencies } = useCurrencyList();
+export const RatesForm = ({ initialValues, onSubmit }: Props) => {
+  const { currencyTypes, loading } = useCurrencyList();
 
   const [baseCurrency, setBaseCurrency] = useState(initialValues.baseCurrency);
   const [targetCurrency, setTargetCurrency] = useState(
@@ -33,18 +25,12 @@ export const RatesForm = ({
 
   const inputMaxW = {
     base: "none",
-    md: "15rem",
+    md: "12em",
   };
 
-  if (!isLoaded) {
-    return (
-      <Flex justifyContent="center" fontSize="3xl">
-        <SpinnerIcon />
-      </Flex>
-    );
+  if (loading) {
+    return <Loading />;
   }
-console.log("RatesForm");
-
   return (
     <Flex direction="column" marginBottom={{ base: "0", md: "1em" }}>
       <Flex
@@ -81,13 +67,8 @@ console.log("RatesForm");
         >
           <FormLabel>From</FormLabel>
           <Select<GroupedOption, true, GroupBase<GroupedOption>>
-            options={
-              allowCryptoCurrencies
-                ? currencyTypes
-                : getFilteredCurrencies(CurrencyType.physical)
-            }
+            options={currencyTypes}
             value={baseCurrency}
-            hasStickyGroupHeaders={!!allowCryptoCurrencies}
             placeholder="Base currency"
             closeMenuOnSelect={true}
             selectedOptionStyle="check"
@@ -121,14 +102,9 @@ console.log("RatesForm");
         >
           <FormLabel>To</FormLabel>
           <Select<GroupedOption, true, GroupBase<GroupedOption>>
-            options={
-              allowCryptoCurrencies
-                ? currencyTypes
-                : getFilteredCurrencies(CurrencyType.physical)
-            }
+            options={currencyTypes}
             name="to"
             value={targetCurrency}
-            hasStickyGroupHeaders={!!allowCryptoCurrencies}
             placeholder="Target currency"
             closeMenuOnSelect={true}
             selectedOptionStyle="check"

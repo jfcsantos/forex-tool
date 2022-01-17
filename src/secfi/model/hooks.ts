@@ -1,48 +1,79 @@
-import { useCallback, useState } from "react";
+import { timeStamp } from "console";
+import { useCallback, useEffect, useState } from "react";
 import { getExchangeRates, getHistoricalData } from "./api";
-import {
-  CurrencyExchangeData,
-  CurrencyExchangeResults,
-  DailyPrices,
-} from "./types";
+import { CurrencyExchangeData, DailyPrices, ExchangeResults } from "./types";
 
-// Interaction layer
-export const useConvertedCurrency = () => {
-  const [results, setResults] = useState<CurrencyExchangeResults | null>(null);
+type Request = {
+  from: string;
+  to: string;
+  timestamp: number;
+};
 
-  const convertCurrency = useCallback(
-    (from: string, to: string, amount: number = 1) => {
-      if (!!amount && !!from && !!to) {
-        getExchangeRates(from, to).then((data: CurrencyExchangeData) => {
-          const exchangeRate = parseFloat(data.exchangeRate);
-          setResults({
-            rateData: data,
-            convertedAmount: amount * exchangeRate,
-            amount,
-          });
-        });
-      } else {
-        setResults(null);
-      }
+export const useExchangeData = () => {
+  const [lastRequest, setLastRequest] = useState<Request>();
+  const [loading, setLoading] = useState(false);
+  const [exchangeData, setExchangeData] = useState<ExchangeResults>();
+
+  // useEffect(() => {
+  //   setLoading(false);
+  // }, [exchangeData]);
+
+  const getResults = useCallback(
+    async (from: string, to: string, amount: number = 1) => {
+      setLoading(true);
+      const rateData = await getExchangeRates(from, to).then(
+        (data: CurrencyExchangeData) => {
+          return data;
+        }
+      );
+      const graphData = await getHistoricalData(from, to).then(
+        (data: DailyPrices) => {
+          return data;
+        }
+      );
+      setLoading(false);
+
+      return {
+        rateData,
+        graphData,
+        convertedAmount: amount * parseFloat(rateData.exchangeRate),
+        amount,
+      };
     },
     []
   );
 
-  return { convertedResults: results, convertCurrency };
-};
+  const getExchangeResults = useCallback(
+    async (from: string, to: string, amount: number = 1) => {
+      let results = exchangeData;
+      //  check if from and to are different from past results
+      // if yes do API request
+      const requestDiff = lastRequest
+        ? Math.floor((Date.now() - lastRequest?.timestamp) / 1000 / 60)
+        : false;
 
-export const useGraphData = () => {
-  const [results, setResults] = useState<DailyPrices | null>(null);
+      console.log(requestDiff);
 
-  const getGraphData = useCallback((from: string, to: string) => {
-    if (!!from && !!to) {
-      getHistoricalData(from, to).then((data: DailyPrices) => {
-        setResults(data);
+      if (
+        !results ||
+        (results &&
+          lastRequest &&
+          (requestDiff > 5 ||
+            from !== lastRequest?.from ||
+            to !== lastRequest.to))
+      ) {
+        results = await getResults(from, to, amount);
+      }
+
+      setLastRequest({ from, to, timestamp: Date.now() });
+      // if not return old ones
+      setExchangeData({
+        ...results,
+        convertedAmount: amount * parseFloat(results.rateData.exchangeRate),
       });
-    } else {
-      setResults(null);
-    }
-  }, []);
+    },
+    [exchangeData, lastRequest]
+  );
 
-  return { graphData: results, getGraphData };
+  return { exchangeData, loading, convert: getExchangeResults };
 };

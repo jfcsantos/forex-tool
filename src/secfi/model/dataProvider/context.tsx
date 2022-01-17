@@ -15,22 +15,13 @@ export interface GroupedOption extends OptionBase {
   value: string;
 }
 
-export enum CurrencyType {
-  digital = "digital",
-  physical = "physical",
-}
-
 export type CurrencyDataProps = {
   currencyTypes: {
     label?: string;
     options: GroupedOption[];
   }[];
-  isLoaded: boolean;
+  loading: boolean;
   getCurrencyList: () => void;
-  getFilteredCurrencies: (filter: CurrencyType) => {
-    label?: string;
-    options: GroupedOption[];
-  }[];
 };
 
 type ProviderProps = {
@@ -45,9 +36,8 @@ type ParseResult<T> = {
 
 export const CurrencyDataContext = createContext<CurrencyDataProps>({
   currencyTypes: [],
-  isLoaded: false,
+  loading: false,
   getCurrencyList: () => undefined,
-  getFilteredCurrencies: () => [],
 });
 
 const parseCurrencyData = (
@@ -72,81 +62,38 @@ const parseCurrencyData = (
 };
 
 export const CurrencyDataProvider = ({ children }: ProviderProps) => {
-  const [physicalList, setPhysicalList] = useState([]);
-  const [digitalList, setDigitalList] = useState([]);
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  useEffect(() => {
-    if (!!digitalList && !!physicalList) {
-      setIsLoaded(true);
-    }
-  }, [digitalList, physicalList]);
+  const [currencyList, setcurrencyList] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getCurrencyList();
-  });
+  }, []);
+
+  useEffect(() => {
+    if (!!currencyList.length) {
+      setLoading(false);
+    }
+  }, [currencyList]);
 
   const getCurrencyList = useCallback(() => {
-    if (!isLoaded) {
-      fetch(`/physicalCurrencyList.csv`)
-        .then((r) => r.text())
-        .then((text) => {
-          parseCurrencyData(text, setPhysicalList);
-        });
-      fetch(`/digitalCurrencyList.csv`)
-        .then((r) => r.text())
-        .then((text) => {
-          parseCurrencyData(text, setDigitalList);
-        });
-    } else {
-      return [
-        {
-          label: "Physical",
-          options: physicalList,
-        },
-        {
-          label: "Digital",
-          options: digitalList,
-        },
-      ];
-    }
-  }, [isLoaded, physicalList, digitalList]);
-
-  const getFilteredCurrencies = useCallback(
-    (filter: CurrencyType) => {
-      if (filter === "digital")
-        return [
-          {
-            label: "Digital",
-            options: digitalList,
-          },
-        ];
-      return [
-        {
-          label: "Physical",
-          options: physicalList,
-        },
-      ];
-    },
-    [digitalList, physicalList]
-  );
+    fetch(`/physicalCurrencyList.csv`)
+      .then((r) => r.text())
+      .then((text) => {
+        parseCurrencyData(text, setcurrencyList);
+      });
+  }, []);
 
   return (
     <CurrencyDataContext.Provider
       value={{
         currencyTypes: [
           {
-            label: "Physical",
-            options: physicalList,
-          },
-          {
-            label: "Digital",
-            options: digitalList,
+            label: "Currencies",
+            options: currencyList,
           },
         ],
-        isLoaded,
+        loading,
         getCurrencyList,
-        getFilteredCurrencies,
       }}
     >
       {children}
