@@ -68,6 +68,7 @@ export const useExchangeData = () => {
         setLastRequest({ from, to, timestamp: Date.now() });
         setExchangeData({
           ...results,
+          amount,
           convertedAmount: amount * parseFloat(results.rateData.exchangeRate),
         });
       } else {
