@@ -1,29 +1,30 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { ApexOptions } from "apexcharts";
 import ReactApexChart from "react-apexcharts";
-import { ExchangeRate } from "./ExchangeRate";
-import { GraphForm } from "./GraphForm";
-import { DailyPrices } from "./model/types";
+import { useGraphData } from "./model/hooks";
+import { RatesForm } from "./RatesForm";
 
 export const chartOptions: ApexOptions = {
   chart: {
     type: "candlestick",
   },
 };
-type Props = {
-  data: DailyPrices | null;
-  getGraph: (from: string, to: string) => void;
+
+const initialValues = {
+  baseCurrency: { value: "EUR", label: "Euro" },
+  targetCurrency: { value: "USD", label: "United States Dollar" },
 };
 
-const RatesGraph = ({ data, getGraph }: Props) => {
-  const initialValues = {
-    baseCurrency: "USD",
-    targetCurrency: "EUR",
-  };
+const RatesGraph = () => {
+  const { graphData, getGraphData } = useGraphData();
   return (
     <Flex direction="column">
-      <GraphForm onSubmit={getGraph} initialValues={initialValues} />
-      {data && (
+      <RatesForm
+        onSubmit={getGraphData}
+        initialValues={initialValues}
+        allowCryptoCurrencies={false}
+      />
+      {graphData && (
         <Flex direction="column">
           <Text
             fontWeight="bold"
@@ -31,13 +32,14 @@ const RatesGraph = ({ data, getGraph }: Props) => {
             fontSize="xl"
             marginBottom="1em"
           >
-            {data.fromCurrencyCode} to {data.toCurrencyCode} chart
+            {graphData.fromCurrencyCode} to {graphData.toCurrencyCode} chart
           </Text>
           <ReactApexChart
             options={chartOptions}
-            series={data?.series}
+            series={graphData?.series}
             type="candlestick"
-            height={500}
+            // height={500}
+            width={800}
           />
         </Flex>
       )}

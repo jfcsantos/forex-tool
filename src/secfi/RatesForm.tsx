@@ -1,78 +1,103 @@
 import { useState } from "react";
-import { ArrowUpDownIcon, UpDownIcon } from "@chakra-ui/icons";
+import { SpinnerIcon, UpDownIcon } from "@chakra-ui/icons";
+import { Button, Flex, FormLabel, Input, InputGroup } from "@chakra-ui/react";
 import {
-  Button,
-  Flex,
-  FormLabel,
-  IconButton,
-  Input,
-  InputGroup,
-} from "@chakra-ui/react";
+  CurrencyType,
+  GroupedOption,
+  useCurrencyList,
+} from "./model/dataProvider/context";
+import { GroupBase, Select } from "chakra-react-select";
 
 type Props = {
+  allowCryptoCurrencies?: boolean;
   initialValues: {
-    baseCurrency: string;
-    targetCurrency: string;
-    amount: number;
+    baseCurrency: GroupedOption;
+    targetCurrency: GroupedOption;
+    amount?: number;
   };
-  onSubmit: (
-    baseCurrency: string,
-    targetCurrency: string,
-    amount: number
-  ) => void;
+  onSubmit: (from: string, to: string, amount?: number) => void;
 };
 
-export const RatesForm = ({ initialValues, onSubmit }: Props) => {
+export const RatesForm = ({
+  allowCryptoCurrencies = true,
+  initialValues,
+  onSubmit,
+}: Props) => {
+  const { currencyTypes, isLoaded, getFilteredCurrencies } = useCurrencyList();
+
   const [baseCurrency, setBaseCurrency] = useState(initialValues.baseCurrency);
   const [targetCurrency, setTargetCurrency] = useState(
     initialValues.targetCurrency
   );
   const [amount, setAmount] = useState(initialValues.amount);
 
+  const inputMaxW = {
+    base: "none",
+    md: "15rem",
+  };
+
+  if (!isLoaded) {
+    return (
+      <Flex justifyContent="center" fontSize="3xl">
+        <SpinnerIcon />
+      </Flex>
+    );
+  }
+console.log("RatesForm");
+
   return (
-    <Flex direction="column">
+    <Flex direction="column" marginBottom={{ base: "0", md: "1em" }}>
       <Flex
         direction={{ base: "column", md: "row" }}
         alignItems={{ base: "column", md: "flex-end" }}
         justifyContent="space-between"
         marginBottom={{ base: "0", md: "6" }}
       >
+        {!!initialValues.amount && (
+          <InputGroup
+            display="flex"
+            flexDirection="column"
+            maxW={inputMaxW}
+            marginBottom={{ base: "6", md: "0" }}
+          >
+            <FormLabel>Amount</FormLabel>
+            <Input
+              placeholder="Amount"
+              name="amount"
+              type="number"
+              value={amount || ""}
+              min={0}
+              onChange={(e) => {
+                setAmount(parseFloat(e.target.value));
+              }}
+            />
+          </InputGroup>
+        )}
         <InputGroup
           display="flex"
           flexDirection="column"
-          maxW={{ base: "none", md: "10rem" }}
-          marginBottom={{ base: "6", md: "0" }}
-        >
-          <FormLabel>Amount</FormLabel>
-          <Input
-            placeholder="Amount"
-            name="amount"
-            type="number"
-            value={amount}
-            min={0}
-            onChange={(e) => {
-              setAmount(parseFloat(e.target.value));
-            }}
-          />
-        </InputGroup>
-        <InputGroup
-          display="flex"
-          flexDirection="column"
-          maxW={{ base: "none", md: "10rem" }}
+          maxW={inputMaxW}
           marginBottom={{ base: "6", md: "0" }}
         >
           <FormLabel>From</FormLabel>
-          <Input
-            placeholder="Base currency"
-            name="from"
-            type="text"
+          <Select<GroupedOption, true, GroupBase<GroupedOption>>
+            options={
+              allowCryptoCurrencies
+                ? currencyTypes
+                : getFilteredCurrencies(CurrencyType.physical)
+            }
             value={baseCurrency}
-            onChange={(e) => {
-              setBaseCurrency(e.target.value);
+            hasStickyGroupHeaders={!!allowCryptoCurrencies}
+            placeholder="Base currency"
+            closeMenuOnSelect={true}
+            selectedOptionStyle="check"
+            onChange={(selected: any) => {
+              setBaseCurrency(selected);
             }}
           />
         </InputGroup>
         <UpDownIcon
+          cursor="pointer"
           alignSelf={{ base: "flex-start", md: "flex-end" }}
           padding="10px"
           borderRadius="50%"
@@ -82,7 +107,6 @@ export const RatesForm = ({ initialValues, onSubmit }: Props) => {
           width="40px"
           transform={{ md: "rotate(90deg)" }}
           onClick={(ev) => {
-            ev.preventDefault();
             const newBase = targetCurrency;
             setTargetCurrency(baseCurrency);
             setBaseCurrency(newBase);
@@ -91,25 +115,38 @@ export const RatesForm = ({ initialValues, onSubmit }: Props) => {
         <InputGroup
           display="flex"
           flexDirection="column"
-          maxW={{ base: "none", md: "10rem" }}
+          maxW={inputMaxW}
           marginBottom={{ base: "6", md: "0" }}
           marginTop="6"
         >
           <FormLabel>To</FormLabel>
-          <Input
-            placeholder="Target currency"
+          <Select<GroupedOption, true, GroupBase<GroupedOption>>
+            options={
+              allowCryptoCurrencies
+                ? currencyTypes
+                : getFilteredCurrencies(CurrencyType.physical)
+            }
             name="to"
-            type="text"
             value={targetCurrency}
-            onChange={(e) => setTargetCurrency(e.target.value)}
+            hasStickyGroupHeaders={!!allowCryptoCurrencies}
+            placeholder="Target currency"
+            closeMenuOnSelect={true}
+            selectedOptionStyle="check"
+            onChange={(selected: any) => {
+              setTargetCurrency(selected);
+            }}
           />
         </InputGroup>
       </Flex>
 
       <Button
+        isDisabled={
+          !baseCurrency ||
+          !targetCurrency ||
+          (!!initialValues.amount && !amount)
+        }
         onClick={(e) => {
-          e.preventDefault();
-          onSubmit(baseCurrency, targetCurrency, amount);
+          onSubmit(baseCurrency.value, targetCurrency.value, amount);
         }}
         variant="brand"
         alignSelf={{ base: "center", md: "flex-end" }}

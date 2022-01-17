@@ -1,5 +1,4 @@
-import { CurrencyExchangeData, DailyPrices, DailyRateValues } from "./types";
-import JSONfile from "./data.json";
+import { CurrencyExchangeData, DailyPrices, DailyRateValues } from "../types";
 
 const API_KEY = "RVZTVA1LQ8G8W1K2";
 const apiURL = "https://www.alphavantage.co/query?";

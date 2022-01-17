@@ -1,31 +1,25 @@
 import { Flex } from "@chakra-ui/react";
 import { ExchangeRate } from "./ExchangeRate";
-import { CurrencyExchangeResults } from "./model/types";
+import { useConvertedCurrency } from "./model/hooks";
 import { RatesForm } from "./RatesForm";
 
-type Props = {
-  data: CurrencyExchangeResults | null;
-  convertCurrency: (
-    baseCurrency: string,
-    targetCurrency: string,
-    amount: number
-  ) => void;
+const initialValues = {
+  baseCurrency: { value: "BTC", label: "Bitcoin" },
+  targetCurrency: { value: "USD", label: "United States Dollar" },
+  amount: 1,
 };
 
-const ExchangeRates = ({ data, convertCurrency }: Props) => {
-  const initialValues = {
-    baseCurrency: "USD",
-    targetCurrency: "EUR",
-    amount: 1,
-  };
+const ExchangeRates = () => {
+  const { convertedResults, convertCurrency } = useConvertedCurrency();
 
   return (
     <Flex direction="column">
       <RatesForm onSubmit={convertCurrency} initialValues={initialValues} />
-      {data && (
+      {convertedResults && (
         <ExchangeRate
-          rateData={data.rateData}
-          convertedAmount={data.convertedAmount}
+          rateData={convertedResults.rateData}
+          convertedAmount={convertedResults.convertedAmount}
+          amount={convertedResults.amount}
         />
       )}
     </Flex>

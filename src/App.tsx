@@ -6,13 +6,13 @@ import {
   Heading,
 } from "@chakra-ui/react";
 import ForexTool from "./secfi/ForexTool";
+import Logo from "./secfi/Logo";
 import theme from "./theme";
 
 export const App = () => (
   <ChakraProvider resetCSS theme={theme}>
     <Container
       display="flex"
-      // justifyContent="space-between"
       maxW="full"
       flexDirection="column"
       minH="100vh"
@@ -23,19 +23,22 @@ export const App = () => (
         as="header"
         position="fixed"
         w="100%"
-        direction="column"
         align="flex-start"
         p="10px 20px"
         background="brand.500"
+        justifyContent="space-between"
+        alignItems="center"
       >
-        <Text fontSize="3xl" fontWeight="bold" color="brand.100">
-          Secfi Forex
-        </Text>
+        <Flex direction="column">
+          <Logo />
+          <Text fontSize="xl" fontWeight="bold" color="brand.100" ml="1.6em">
+            forex
+          </Text>
+        </Flex>
       </Flex>
       <Flex
         mt="65px"
         p="10"
-        pb="200"
         bg="brand.200"
         direction="column"
         alignItems="center"

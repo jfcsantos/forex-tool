@@ -32,11 +32,6 @@ const theme = extendTheme({
           },
         },
       },
-      //   baseStyle: {
-      //     tab: {
-      //       bg: "gray.200",
-      //     },
-      //   },
     },
   },
 });

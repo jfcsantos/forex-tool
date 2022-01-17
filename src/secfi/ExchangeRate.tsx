@@ -1,4 +1,4 @@
-import { Container, Flex, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { CurrencyExchangeData } from "./model/types";
 
 type Props = {
