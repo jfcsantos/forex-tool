@@ -5,7 +5,7 @@ import { ExchangeResults } from "./model/types";
 import { ApexOptions } from "apexcharts";
 
 type Props = {
-  data: ExchangeResults | undefined;
+  data: ExchangeResults | Error | undefined;
   loading: boolean;
 };
 
@@ -16,7 +16,7 @@ export const chartOptions: ApexOptions = {
 };
 
 const Results = ({ data }: Props) => {
-  if (!data) {
+  if (!data || data instanceof Error) {
     return <Text>No results to show</Text>;
   }
 
@@ -32,7 +32,6 @@ const Results = ({ data }: Props) => {
         options={chartOptions}
         series={graphData?.series}
         type="candlestick"
-        
       />
     </Flex>
   );

@@ -11,29 +11,37 @@ type Request = {
 export const useExchangeData = () => {
   const [lastRequest, setLastRequest] = useState<Request>();
   const [loading, setLoading] = useState(false);
-  const [exchangeData, setExchangeData] = useState<ExchangeResults>();
+  const [exchangeData, setExchangeData] = useState<
+    ExchangeResults | Error | undefined
+  >();
 
   const getResults = useCallback(
     async (from: string, to: string, amount: number = 1) => {
       setLoading(true);
-      const rateData = await getExchangeRates(from, to).then(
-        (data: CurrencyExchangeData) => {
-          return data;
-        }
-      );
-      const graphData = await getHistoricalData(from, to).then(
-        (data: DailyPrices) => {
-          return data;
-        }
-      );
-      setLoading(false);
+      let results;
+      try {
+        const rateData = await getExchangeRates(from, to).then(
+          (data: CurrencyExchangeData) => {
+            return data;
+          }
+        );
+        const graphData = await getHistoricalData(from, to).then(
+          (data: DailyPrices) => {
+            return data;
+          }
+        );
 
-      return {
-        rateData,
-        graphData,
-        convertedAmount: amount * parseFloat(rateData.exchangeRate),
-        amount,
-      };
+        results = {
+          rateData,
+          graphData,
+          convertedAmount: amount * parseFloat(rateData.exchangeRate),
+          amount,
+        };
+      } catch (error) {
+        results = new Error("Unknown API error");
+      }
+      setLoading(false);
+      return results;
     },
     []
   );
@@ -56,12 +64,15 @@ export const useExchangeData = () => {
       ) {
         results = await getResults(from, to, amount);
       }
-
-      setLastRequest({ from, to, timestamp: Date.now() });
-      setExchangeData({
-        ...results,
-        convertedAmount: amount * parseFloat(results.rateData.exchangeRate),
-      });
+      if (!(results instanceof Error)) {
+        setLastRequest({ from, to, timestamp: Date.now() });
+        setExchangeData({
+          ...results,
+          convertedAmount: amount * parseFloat(results.rateData.exchangeRate),
+        });
+      } else {
+        setExchangeData(results);
+      }
     },
     [exchangeData, lastRequest]
   );
